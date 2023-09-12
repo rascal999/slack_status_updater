@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Define the directory to search in
-SEARCH_DIRECTORY="/home/user/Data/logseq"
+SEARCH_DIRECTORY="/monitor"
 
 # Define the string you want to search for
 SEARCH_STRING="#status"
@@ -59,7 +59,7 @@ do
 
       if [ -n "$most_recent_file" ]; then
         # Has to be head because latest entries are at the top
-        STATUS=`rg "#status" "$most_recent_file" | head -1 | choose -f '- ' 1`
+        STATUS=`grep "#status" "$most_recent_file" | head -1 | choose -f '- ' 1`
 
         # Don't netio if we don't need to
         if [[ "$STATUS" != "$LAST_STATUS" ]]; then
