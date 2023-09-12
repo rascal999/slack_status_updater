@@ -9,6 +9,13 @@ SEARCH_STRING="#status"
 # Slack status
 LAST_STATUS=""
 
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+function ctrl_c() {
+    exit 1
+}
+
 # Update Slack
 function update_slack() {
     source .env
