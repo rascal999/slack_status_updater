@@ -69,9 +69,9 @@ do
         fi
 
         LAST_STATUS="$STATUS"
-        sleep 15
       else
         echo "No files containing '$SEARCH_STRING' found in the specified directory and its subdirectories."
       fi
+      sleep 15
     fi
 done
