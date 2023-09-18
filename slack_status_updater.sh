@@ -22,9 +22,9 @@ function update_slack() {
     if [[ "$STATUS_LINE" == "lunch" ]]; then
         STATUS_EMOJI=":poultry_leg:"
     elif [[ "$STATUS_LINE" == "ops" ]]; then
-        STATUS_EMOJI=":bar_chart:"
+        STATUS_EMOJI=":male-technologist:"
     elif [[ "$STATUS_LINE" == "dev" ]]; then
-        STATUS_EMOJI=":rocket:"
+        STATUS_EMOJI=":male-technologist:"
     elif [[ "$STATUS_LINE" == "meeting" ]]; then
         STATUS_EMOJI=":headphones:"
     fi
