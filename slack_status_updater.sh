@@ -29,7 +29,7 @@ function update_slack() {
         STATUS_EMOJI=":headphones:"
     fi
 
-    STATUS_TEXT=`echo $1 | sed -e 's/\*\*..\:..\*\* //;s/#.*//'
+    STATUS_TEXT=`echo $1 | sed -e 's/\*\*..\:..\*\* //;s/#.*//'`
 
     # Create a JSON payload for the request body
     PAYLOAD="{\"profile\": {\"status_text\": \"$STATUS_TEXT\", \"status_emoji\": \"$STATUS_EMOJI\"}}"
