@@ -38,6 +38,7 @@ function update_slack() {
     curl -X POST -H "Content-Type: application/json; charset=utf-8" -H "Authorization: Bearer $SLACK_TOKEN" --data "$PAYLOAD" "https://slack.com/api/users.profile.set"
 
     # You can also add error handling here to check the response from Slack
+    return $?
 }
 
 while :
@@ -66,12 +67,15 @@ do
 
         # Don't netio if we don't need to
         if [[ "$STATUS" != "$LAST_STATUS" ]]; then
-            NOW=`date +"[%Y%m%d %H:%M:%S]"`
-            echo "$NOW Updating status.."
             update_slack "$STATUS"
+            UPDATE_FAIL=$?
         fi
 
-        LAST_STATUS="$STATUS"
+        if [[ "$UPDATE_FAIL" == "0" ]]; then
+            NOW=`date +"[%Y%m%d %H:%M:%S]"`
+            echo "$NOW Updated status.."
+            LAST_STATUS="$STATUS"
+        fi
       else
         echo "No files containing '$SEARCH_STRING' found in the specified directory and its subdirectories."
       fi
