@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Define the directory to search in
-SEARCH_DIRECTORY="/monitor"
+SEARCH_DIRECTORY="/monitor/journals"
 
 # Define the string you want to search for
 SEARCH_STRING="#status"
@@ -12,13 +12,23 @@ LAST_STATUS=""
 # trap ctrl-c and call ctrl_c()
 trap - INT
 
+# Debug echo
+function decho() {
+    DEBUG=0
+
+    if [[ "$DEBUG" == "1" ]]; then
+        echo $1
+    fi
+}
+
 # Update Slack
 function update_slack() {
     source .env
 
     STATUS_EMOJI=":bar_chart:"
     # Define the status information you want to set
-    STATUS_LINE=`echo "$1" | choose -f '#' 1 | choose 0 | choose -f '-' 1`
+    STATUS_LINE=$2
+    decho \$STATUS_LINE $STATUS_LINE
     if [[ "$STATUS_LINE" == "lunch" ]]; then
         STATUS_EMOJI=":poultry_leg:"
     elif [[ "$STATUS_LINE" == "ops" ]]; then
@@ -62,19 +72,24 @@ do
       done
 
       if [ -n "$most_recent_file" ]; then
+        decho \$most_recent_file $most_recent_file
         # Has to be head because latest entries are at the top
-        STATUS=`grep "#status" "$most_recent_file" | head -1 | choose -f '- ' 1`
+        STATUS=`grep "#status" "$most_recent_file" | head -1 | sed -e 's/- \*\*..\:..\*\* //;s/#.*//'`
+        STATUS_TYPE=`grep "#status" "$most_recent_file" | head -1 | choose -f "#status-" 1 | choose 0`
+
+        decho \$STATUS $STATUS
+        decho \$LAST_STATUS $LAST_STATUS
 
         # Don't netio if we don't need to
         if [[ "$STATUS" != "$LAST_STATUS" ]]; then
-            update_slack "$STATUS"
+            update_slack "$STATUS" "$STATUS_TYPE"
             UPDATE_FAIL=$?
-        fi
 
-        if [[ "$UPDATE_FAIL" == "0" ]]; then
-            NOW=`date +"[%Y%m%d %H:%M:%S]"`
-            echo "$NOW Updated status.."
-            LAST_STATUS="$STATUS"
+            if [[ "$UPDATE_FAIL" == "0" ]]; then
+                NOW=`date +"[%Y%m%d %H:%M:%S]"`
+                echo "$NOW Updated status.."
+                LAST_STATUS="$STATUS"
+            fi
         fi
       else
         echo "No files containing '$SEARCH_STRING' found in the specified directory and its subdirectories."
